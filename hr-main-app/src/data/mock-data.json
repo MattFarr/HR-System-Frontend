@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "first_name": "John",
+        "last_name": "Doe",
+        "annual_salary": {
+            "amount": 25000,
+            "currency": "EUR"
+        },
+        "start_date": "2015-12-01"
+    },
+    {
+        "id": 2,
+        "first_name": "Lila",
+        "last_name": "Kaufman",
+        "annual_salary": {
+            "amount": 50000,
+            "currency": "USD"
+        },
+        "start_date": "2016-03-25"
+    },
+    {
+        "id": 3,
+        "first_name": "Jay",
+        "last_name": "Bryan",
+        "annual_salary": {
+            "amount": 50000,
+            "currency": "EUR"
+        },
+        "start_date": "2020-01-01"
+    }
+]
