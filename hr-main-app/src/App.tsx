@@ -2,12 +2,12 @@ import "./App.css";
 
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-import { actionCreators, State } from "./state";
+import { accountActionCreators, State } from "./state";
 
 function App() {
   const dispatch = useDispatch();
   const { depositMoney, withdrawMoney, bankrupt } = bindActionCreators(
-    actionCreators,
+    accountActionCreators,
     dispatch
   );
 

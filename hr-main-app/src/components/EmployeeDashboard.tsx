@@ -5,6 +5,9 @@ import { useState } from "react";
 import { orderBy } from "lodash";
 import initialEmployeeData from "../data/mock-data.json";
 import { Employee } from "../models/employee";
+import { useDispatch, useSelector } from "react-redux";
+import { bindActionCreators } from "redux";
+import { employeeActionCreators, State } from "../state";
 
 interface ISort {
   field: string;
@@ -12,7 +15,16 @@ interface ISort {
 }
 
 const EmployeeDashboard = (): JSX.Element => {
-  const [employees, setEmployees] = useState<Employee[]>(initialEmployeeData);
+  const dispatch = useDispatch();
+  const { addEmployee, removeEmployee } = bindActionCreators(
+    employeeActionCreators,
+    dispatch
+  );
+  const employeesState = useSelector((state: State) => state.employees);
+
+  const [employees, setEmployees] = useState<Employee[]>(
+    employeesState.employees
+  );
   const [filter, setFilter] = useState<string | undefined>(undefined);
   const [sort, setSort] = useState<ISort>({
     field: "",
@@ -29,6 +41,21 @@ const EmployeeDashboard = (): JSX.Element => {
           ? "desc"
           : "asc",
     });
+  };
+
+  const addEmployeeConst = () => {
+    let employeeSample: Employee = {
+      id: 6,
+      firstName: "Matthew",
+      lastName: "Farrugia",
+      startDate: "2020-03-03",
+      annualSalary: {
+        amount: 2000,
+        currency: "USD",
+      },
+    };
+
+    addEmployee(employeeSample);
   };
 
   const exportToCSV = () => {
@@ -48,6 +75,10 @@ const EmployeeDashboard = (): JSX.Element => {
     document.body.appendChild(a);
     a.click();
   };
+
+  useEffect(() => {
+    setEmployees(employeesState.employees);
+  }, [employeesState]);
 
   useEffect(() => {
     let list = employees;
@@ -85,6 +116,8 @@ const EmployeeDashboard = (): JSX.Element => {
       </Button>
       <Button onClick={() => updateSort("startDate")}>Sort by Date</Button>
       <Button onClick={exportToCSV}>Export to CSV</Button>
+      <Button onClick={addEmployeeConst}>Add Employee</Button>
+
       <h1>Employee List</h1>
       <small>
         Sorted by {sort.field} in {sort.direction} order
@@ -96,6 +129,9 @@ const EmployeeDashboard = (): JSX.Element => {
           <p>{employee.annualSalary.amount}</p>
           <p>{employee.annualSalary.currency}</p>
           <p>{employee.startDate} </p>
+          <Button onClick={() => removeEmployee(employee.id)}>
+            Remove Employee
+          </Button>
         </Box>
       ))}
     </Box>
