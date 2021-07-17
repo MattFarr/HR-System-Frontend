@@ -9,6 +9,7 @@ import {
   Collapse,
   IconButton,
   TextField,
+  Typography,
 } from "@material-ui/core";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -69,20 +70,10 @@ const EmployeeDashboard = (): JSX.Element => {
     });
   };
 
-  // const addEmployeeConst = () => {
-  //   let employeeSample: Employee = {
-  //     id: 6,
-  //     firstName: "Matthew",
-  //     lastName: "Farrugia",
-  //     startDate: "2020-03-03",
-  //     annualSalary: {
-  //       amount: 2000,
-  //       currency: "USD",
-  //     },
-  //   };
-
-  //   addEmployee(employeeSample);
-  // };
+  const addNewEmployee = (employee: Employee) => {
+    setFilter("");
+    addEmployee(employee);
+  };
 
   const exportToCSV = () => {
     if (!employees.length) {
@@ -103,7 +94,18 @@ const EmployeeDashboard = (): JSX.Element => {
   };
 
   useEffect(() => {
-    setEmployees(employeesState.employees);
+    let list = employeesState.employees;
+    if (filter) {
+      list = list.filter((employee: Employee) =>
+        `${employee.firstName} ${employee.lastName}`
+          .toLowerCase()
+          .includes(filter.toLowerCase())
+      );
+    }
+    if (sort) {
+      list = orderBy(list, [sort.field], [sort.direction]);
+    }
+    setEmployees(list);
   }, [employeesState]);
 
   useEffect(() => {
@@ -115,7 +117,7 @@ const EmployeeDashboard = (): JSX.Element => {
           .includes(filter.toLowerCase())
       );
     } else {
-      list = initialEmployeeData;
+      list = employeesState.employees;
     }
     setEmployees(list);
   }, [filter]);
@@ -206,52 +208,36 @@ const EmployeeDashboard = (): JSX.Element => {
                 unmountOnExit
               >
                 <CardContent>
-                  <p>Testing this out</p>
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                    width="100%"
+                    flexWrap="wrap"
+                    justifyContent="space-evenly"
+                  >
+                    <Box width="30%">
+                      <h2>Info</h2>
+                      <Typography>{`Employee Id: ${employee.id}`}</Typography>
+                      <Typography>{`Employee: ${employee.firstName} ${employee.lastName}`}</Typography>
+                      <Typography>{`Joined on: ${employee.startDate}`}</Typography>
+                    </Box>
+                    <Box width="30%">
+                      <h2>Role</h2>
+                      <Typography>{`Job Title: Senior Programmer`}</Typography>
+                      <Typography>{`Grade: C2`}</Typography>
+                      <Typography>{`Reports to: Matthew Farrugia`}</Typography>
+                    </Box>
+                    <Box width="30%">
+                      <h2>Salary</h2>
+                      <Typography>{`Annual Salary: ${employee.annualSalary.amount}`}</Typography>
+                      <Typography>{`Currency: ${employee.annualSalary.currency}`}</Typography>
+                    </Box>
+                  </Box>
                 </CardContent>
               </Collapse>
             </Card>
-            /* <Box flexDirection="row" display="flex" key={employee.id}>
-              <p>{employee.firstName}</p>
-              <p>{employee.lastName}</p>
-              <p>{employee.annualSalary.amount}</p>
-              <p>{employee.annualSalary.currency}</p>
-              <p>{employee.startDate} </p>
-              <Button onClick={() => removeEmployee(employee.id)}>
-                Remove Employee
-              </Button>
-            </Box> */
           ))}
         </Box>
-        {/* <TextField
-          type="text"
-          onChange={(e) => setFilter(e.target.value)}
-          value={filter}
-        />
-        <Button onClick={() => setFilter(undefined)}>Clear</Button>
-        <Button onClick={() => updateSort("firstName")}>Sort by Name</Button>
-        <Button onClick={() => updateSort("annualSalary.amount")}>
-          Sort by Amount
-        </Button>
-        <Button onClick={() => updateSort("startDate")}>Sort by Date</Button>
-        <Button onClick={exportToCSV}>Export to CSV</Button>
-        <Button onClick={addEmployeeConst}>Add Employee</Button>
-
-        <h1>Employee List</h1>
-        <small>
-          Sorted by {sort.field} in {sort.direction} order
-        </small>
-        {employees.map((employee: Employee) => (
-          <Box flexDirection="row" display="flex" key={employee.id}>
-            <p>{employee.firstName}</p>
-            <p>{employee.lastName}</p>
-            <p>{employee.annualSalary.amount}</p>
-            <p>{employee.annualSalary.currency}</p>
-            <p>{employee.startDate} </p>
-            <Button onClick={() => removeEmployee(employee.id)}>
-              Remove Employee
-            </Button>
-          </Box>
-        ))} */}
       </Box>
       <Box
         display="flex"
@@ -259,7 +245,7 @@ const EmployeeDashboard = (): JSX.Element => {
         justifyContent="center"
         flexDirection="row"
       >
-        <EmployeeForm addEmployee={addEmployee} />
+        <EmployeeForm addEmployee={addNewEmployee} />
       </Box>
     </Box>
   );
