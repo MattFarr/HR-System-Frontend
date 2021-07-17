@@ -1,4 +1,12 @@
-import { Box, Button, TextField } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField,
+} from "@material-ui/core";
 import { Formik } from "formik";
 import { Employee } from "../models/employee";
 
@@ -16,10 +24,10 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
         lastName: "",
         id: "",
         startDate: "",
-        currency: "",
+        currency: "EUR",
         amount: "",
       }}
-      onSubmit={async (values: any, { setSubmitting }: any) => {
+      onSubmit={async (values: any) => {
         //This is only for test purposes , the best way to do this is to check if the id exisits already and throw an error if so
         const userId = Math.floor(Math.random() * 100000) + 1;
 
@@ -49,6 +57,7 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
               justifyContent="space-evenly"
             >
               <TextField
+                id="firstName"
                 label="First Name"
                 variant="outlined"
                 name="firstName"
@@ -59,6 +68,7 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
                 }}
               />
               <TextField
+                id="lastName"
                 label="Last Name"
                 variant="outlined"
                 name="lastName"
@@ -69,6 +79,7 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
                 }}
               />
               <TextField
+                id="amount"
                 label="Annual Salary"
                 variant="outlined"
                 name="amount"
@@ -78,21 +89,36 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
                   handleChange(e);
                 }}
               />
-              <TextField
-                label="Currency"
-                variant="outlined"
+              <RadioGroup
+                id="currency"
+                row
                 name="currency"
-                type="text"
-                value={values.currency}
                 onChange={(e) => {
                   handleChange(e);
                 }}
-              />
+                value={values.currency}
+              >
+                <FormControlLabel
+                  value="EUR"
+                  control={<Radio color="primary" />}
+                  label="EUR"
+                />
+                <FormControlLabel
+                  value="USD"
+                  control={<Radio color="primary" />}
+                  label="USD"
+                />
+              </RadioGroup>
               <TextField
+                id="startDate"
                 label="Start Date"
                 variant="outlined"
                 name="startDate"
-                type="text"
+                type="date"
+                contentEditable={false}
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 value={values.startDate}
                 onChange={(e) => {
                   handleChange(e);
