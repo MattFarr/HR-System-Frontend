@@ -1,5 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, TextField } from "@material-ui/core";
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Collapse,
+  IconButton,
+  TextField,
+} from "@material-ui/core";
 import { useEffect } from "react";
 import { useState } from "react";
 import { orderBy } from "lodash";
@@ -9,6 +19,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { employeeActionCreators, State } from "../state";
 import EmployeeForm from "./EmployeeForm";
+import DeleteIcon from "@material-ui/icons/Delete";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 interface ISort {
   field: string;
@@ -32,6 +44,17 @@ const EmployeeDashboard = (): JSX.Element => {
     direction: "asc",
   });
 
+  // const [expanded, setExpanded] = useState(false);
+  const [expandedId, setExpandedId] = useState(-1);
+
+  const handleExpandClick = (i: number) => {
+    setExpandedId(expandedId === i ? -1 : i);
+  };
+
+  // const handleExpandClick = () => {
+  //   setExpanded(!expanded);
+  // };
+
   const updateSort = (field: string) => {
     setSort({
       field,
@@ -44,20 +67,20 @@ const EmployeeDashboard = (): JSX.Element => {
     });
   };
 
-  const addEmployeeConst = () => {
-    let employeeSample: Employee = {
-      id: 6,
-      firstName: "Matthew",
-      lastName: "Farrugia",
-      startDate: "2020-03-03",
-      annualSalary: {
-        amount: 2000,
-        currency: "USD",
-      },
-    };
+  // const addEmployeeConst = () => {
+  //   let employeeSample: Employee = {
+  //     id: 6,
+  //     firstName: "Matthew",
+  //     lastName: "Farrugia",
+  //     startDate: "2020-03-03",
+  //     annualSalary: {
+  //       amount: 2000,
+  //       currency: "USD",
+  //     },
+  //   };
 
-    addEmployee(employeeSample);
-  };
+  //   addEmployee(employeeSample);
+  // };
 
   const exportToCSV = () => {
     if (!employees.length) {
@@ -104,38 +127,132 @@ const EmployeeDashboard = (): JSX.Element => {
   }, [sort]);
 
   return (
-    <Box>
-      <EmployeeForm addEmployee={addEmployee} />
-      <TextField
-        type="text"
-        onChange={(e) => setFilter(e.target.value)}
-        value={filter}
-      />
-      <Button onClick={() => setFilter(undefined)}>Clear</Button>
-      <Button onClick={() => updateSort("firstName")}>Sort by Name</Button>
-      <Button onClick={() => updateSort("annualSalary.amount")}>
-        Sort by Amount
-      </Button>
-      <Button onClick={() => updateSort("startDate")}>Sort by Date</Button>
-      <Button onClick={exportToCSV}>Export to CSV</Button>
-      <Button onClick={addEmployeeConst}>Add Employee</Button>
-
-      <h1>Employee List</h1>
-      <small>
-        Sorted by {sort.field} in {sort.direction} order
-      </small>
-      {employees.map((employee: Employee) => (
-        <Box flexDirection="row" display="flex" key={employee.id}>
-          <p>{employee.firstName}</p>
-          <p>{employee.lastName}</p>
-          <p>{employee.annualSalary.amount}</p>
-          <p>{employee.annualSalary.currency}</p>
-          <p>{employee.startDate} </p>
-          <Button onClick={() => removeEmployee(employee.id)}>
-            Remove Employee
-          </Button>
+    <Box display="flex">
+      <Box display="flex" width="70%" flexDirection="column" padding="20px">
+        <Box
+          display="flex"
+          flexDirection="row"
+          width="100%"
+          justifyContent="space-between"
+        >
+          {/* <Box display="flex"> */}
+          <TextField
+            label="Search by name"
+            type="text"
+            onChange={(e) => setFilter(e.target.value)}
+            value={filter}
+            variant="outlined"
+          />
+          {/* <Button onClick={() => setFilter(undefined)}>Clear</Button> */}
+          {/* </Box> */}
+          <Box display="flex">
+            <Button variant="outlined" onClick={() => updateSort("firstName")}>
+              Sort by Name
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => updateSort("annualSalary.amount")}
+            >
+              Sort by Amount
+            </Button>
+            <Button variant="outlined" onClick={() => updateSort("startDate")}>
+              Sort by Date
+            </Button>
+            <Button variant="outlined" onClick={exportToCSV}>
+              Export to CSV
+            </Button>
+          </Box>
         </Box>
-      ))}
+        <Box display="flex" flexDirection="column">
+          {employees.map((employee: Employee) => (
+            <Card key={employee.id}>
+              <CardHeader
+                avatar={
+                  <Avatar>{`${employee.firstName.charAt(
+                    0
+                  )}${employee.lastName.charAt(0)}`}</Avatar>
+                }
+                title={`${employee.firstName} ${employee.lastName}`}
+                subheader={`Joined: ${employee.startDate}`}
+                action={
+                  <>
+                    <IconButton
+                      onClick={() => handleExpandClick(employee.id)}
+                      aria-expanded={expandedId === employee.id}
+                      aria-label="show more"
+                    >
+                      <ExpandMoreIcon />
+                    </IconButton>
+                    <IconButton
+                      aria-label="settings"
+                      onClick={() => removeEmployee(employee.id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
+                }
+              />
+              <Collapse
+                in={expandedId === employee.id}
+                timeout="auto"
+                unmountOnExit
+              >
+                <CardContent>
+                  <p>Testing this out</p>
+                </CardContent>
+              </Collapse>
+            </Card>
+            /* <Box flexDirection="row" display="flex" key={employee.id}>
+              <p>{employee.firstName}</p>
+              <p>{employee.lastName}</p>
+              <p>{employee.annualSalary.amount}</p>
+              <p>{employee.annualSalary.currency}</p>
+              <p>{employee.startDate} </p>
+              <Button onClick={() => removeEmployee(employee.id)}>
+                Remove Employee
+              </Button>
+            </Box> */
+          ))}
+        </Box>
+        {/* <TextField
+          type="text"
+          onChange={(e) => setFilter(e.target.value)}
+          value={filter}
+        />
+        <Button onClick={() => setFilter(undefined)}>Clear</Button>
+        <Button onClick={() => updateSort("firstName")}>Sort by Name</Button>
+        <Button onClick={() => updateSort("annualSalary.amount")}>
+          Sort by Amount
+        </Button>
+        <Button onClick={() => updateSort("startDate")}>Sort by Date</Button>
+        <Button onClick={exportToCSV}>Export to CSV</Button>
+        <Button onClick={addEmployeeConst}>Add Employee</Button>
+
+        <h1>Employee List</h1>
+        <small>
+          Sorted by {sort.field} in {sort.direction} order
+        </small>
+        {employees.map((employee: Employee) => (
+          <Box flexDirection="row" display="flex" key={employee.id}>
+            <p>{employee.firstName}</p>
+            <p>{employee.lastName}</p>
+            <p>{employee.annualSalary.amount}</p>
+            <p>{employee.annualSalary.currency}</p>
+            <p>{employee.startDate} </p>
+            <Button onClick={() => removeEmployee(employee.id)}>
+              Remove Employee
+            </Button>
+          </Box>
+        ))} */}
+      </Box>
+      <Box
+        display="flex"
+        width="30%"
+        justifyContent="center"
+        flexDirection="row"
+      >
+        <EmployeeForm addEmployee={addEmployee} />
+      </Box>
     </Box>
   );
 };

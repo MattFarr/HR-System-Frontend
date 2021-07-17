@@ -2,13 +2,11 @@ import {
   Box,
   Button,
   FormControlLabel,
-  FormHelperText,
   Radio,
   RadioGroup,
-  Select,
   TextField,
 } from "@material-ui/core";
-import { Formik, FormikErrors } from "formik";
+import { Formik } from "formik";
 import { Employee } from "../models/employee";
 import * as Yup from "yup";
 
@@ -49,7 +47,7 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
 
         let employeeModel: Employee = {
           id: userId,
-          firstName: values.firsName,
+          firstName: values.firstName,
           lastName: values.lastName,
           startDate: values.startDate,
           annualSalary: {
@@ -69,106 +67,104 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
         touched,
         setFieldTouched,
       }) => (
-        <>
+        <Box width="100%">
           <form onSubmit={handleSubmit}>
-            <Box display="flex" flexDirection="column">
-              <Box
-                display="flex"
-                flexDirection="column"
-                padding="30px"
-                height="500px"
-                maxWidth="20%"
-                justifyContent="space-evenly"
+            <Box
+              display="flex"
+              flexDirection="column"
+              padding="50px"
+              height="500px"
+              justifyContent="space-evenly"
+            >
+              <TextField
+                id="firstName"
+                fullWidth={true}
+                label="First Name"
+                variant="outlined"
+                name="firstName"
+                type="text"
+                value={values.firstName}
+                onChange={(e) => {
+                  setFieldTouched(e.target.name, true, false);
+                  handleChange(e);
+                }}
+                error={touched.firstName && Boolean(errors.firstName)}
+                helperText={touched.firstName && errors.firstName}
+              />
+              <TextField
+                id="lastName"
+                label="Last Name"
+                variant="outlined"
+                name="lastName"
+                type="text"
+                value={values.lastName}
+                onChange={(e) => {
+                  setFieldTouched(e.target.name, true, false);
+                  handleChange(e);
+                }}
+                error={touched.lastName && Boolean(errors.lastName)}
+                helperText={touched.lastName && errors.lastName}
+              />
+              <TextField
+                id="amount"
+                label="Annual Salary"
+                variant="outlined"
+                name="amount"
+                type="text"
+                value={values.amount}
+                onChange={(e) => {
+                  setFieldTouched(e.target.name, true, false);
+                  handleChange(e);
+                }}
+                error={touched.amount && Boolean(errors.amount)}
+                helperText={touched.amount && errors.amount}
+              />
+              <RadioGroup
+                id="currency"
+                row
+                name="currency"
+                onChange={(e) => {
+                  setFieldTouched(e.target.name, true, false);
+                  handleChange(e);
+                }}
+                value={values.currency}
               >
-                <TextField
-                  id="firstName"
-                  label="First Name"
-                  variant="outlined"
-                  name="firstName"
-                  type="text"
-                  value={values.firstName}
-                  onChange={(e) => {
-                    setFieldTouched(e.target.name, true, false);
-                    handleChange(e);
-                  }}
-                  error={touched.firstName && Boolean(errors.firstName)}
-                  helperText={touched.firstName && errors.firstName}
+                <FormControlLabel
+                  value="EUR"
+                  control={<Radio color="primary" />}
+                  label="EUR"
                 />
-                <TextField
-                  id="lastName"
-                  label="Last Name"
-                  variant="outlined"
-                  name="lastName"
-                  type="text"
-                  value={values.lastName}
-                  onChange={(e) => {
-                    setFieldTouched(e.target.name, true, false);
-                    handleChange(e);
-                  }}
-                  error={touched.lastName && Boolean(errors.lastName)}
-                  helperText={touched.lastName && errors.lastName}
+                <FormControlLabel
+                  value="USD"
+                  control={<Radio color="primary" />}
+                  label="USD"
                 />
-                <TextField
-                  id="amount"
-                  label="Annual Salary"
-                  variant="outlined"
-                  name="amount"
-                  type="text"
-                  value={values.amount}
-                  onChange={(e) => {
-                    setFieldTouched(e.target.name, true, false);
-                    handleChange(e);
-                  }}
-                  error={touched.amount && Boolean(errors.amount)}
-                  helperText={touched.amount && errors.amount}
-                />
-                <RadioGroup
-                  id="currency"
-                  row
-                  name="currency"
-                  onChange={(e) => {
-                    setFieldTouched(e.target.name, true, false);
-                    handleChange(e);
-                  }}
-                  value={values.currency}
-                >
-                  <FormControlLabel
-                    value="EUR"
-                    control={<Radio color="primary" />}
-                    label="EUR"
-                  />
-                  <FormControlLabel
-                    value="USD"
-                    control={<Radio color="primary" />}
-                    label="USD"
-                  />
-                </RadioGroup>
-                <TextField
-                  id="startDate"
-                  label="Start Date"
-                  variant="outlined"
-                  name="startDate"
-                  type="date"
-                  contentEditable={false}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  value={values.startDate}
-                  onChange={(e) => {
-                    setFieldTouched(e.target.name, true, false);
-                    handleChange(e);
-                  }}
-                  error={touched.startDate && Boolean(errors.startDate)}
-                  helperText={touched.startDate && errors.startDate}
-                />
+              </RadioGroup>
+              <TextField
+                id="startDate"
+                label="Start Date"
+                variant="outlined"
+                name="startDate"
+                type="date"
+                contentEditable={false}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={values.startDate}
+                onChange={(e) => {
+                  setFieldTouched(e.target.name, true, false);
+                  handleChange(e);
+                }}
+                error={touched.startDate && Boolean(errors.startDate)}
+                helperText={touched.startDate && errors.startDate}
+              />
 
-                <Button variant="contained" size="medium" type="submit">
-                  Add employee
-                </Button>
-              </Box>
+              <Button variant="contained" size="medium" type="submit">
+                Add employee
+              </Button>
             </Box>
           </form>
-        </>
+        </Box>
       )}
     </Formik>
   );
