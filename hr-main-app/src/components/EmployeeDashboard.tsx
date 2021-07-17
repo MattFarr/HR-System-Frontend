@@ -21,6 +21,8 @@ import { employeeActionCreators, State } from "../state";
 import EmployeeForm from "./EmployeeForm";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ExpandLessIcon from "@material-ui/icons/ExpandLess";
+import ClearIcon from "@material-ui/icons/Clear";
 
 interface ISort {
   field: string;
@@ -135,16 +137,18 @@ const EmployeeDashboard = (): JSX.Element => {
           width="100%"
           justifyContent="space-between"
         >
-          {/* <Box display="flex"> */}
-          <TextField
-            label="Search by name"
-            type="text"
-            onChange={(e) => setFilter(e.target.value)}
-            value={filter}
-            variant="outlined"
-          />
-          {/* <Button onClick={() => setFilter(undefined)}>Clear</Button> */}
-          {/* </Box> */}
+          <Box display="flex">
+            <TextField
+              label="Search by name"
+              type="text"
+              onChange={(e) => setFilter(e.target.value)}
+              value={filter}
+              variant="outlined"
+            />
+            <IconButton aria-label="settings" onClick={() => setFilter("")}>
+              <ClearIcon />
+            </IconButton>
+          </Box>
           <Box display="flex">
             <Button variant="outlined" onClick={() => updateSort("firstName")}>
               Sort by Name
@@ -163,7 +167,7 @@ const EmployeeDashboard = (): JSX.Element => {
             </Button>
           </Box>
         </Box>
-        <Box display="flex" flexDirection="column">
+        <Box display="flex" flexDirection="column" marginTop="20px">
           {employees.map((employee: Employee) => (
             <Card key={employee.id}>
               <CardHeader
@@ -181,7 +185,11 @@ const EmployeeDashboard = (): JSX.Element => {
                       aria-expanded={expandedId === employee.id}
                       aria-label="show more"
                     >
-                      <ExpandMoreIcon />
+                      {expandedId === employee.id ? (
+                        <ExpandLessIcon />
+                      ) : (
+                        <ExpandMoreIcon />
+                      )}
                     </IconButton>
                     <IconButton
                       aria-label="settings"
