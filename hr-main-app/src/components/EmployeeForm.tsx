@@ -5,13 +5,14 @@ import {
   Radio,
   RadioGroup,
   TextField,
+  Typography,
 } from "@material-ui/core";
+import * as Yup from "yup";
 import { Formik } from "formik";
 import { Employee } from "../models/employee";
-import * as Yup from "yup";
 
 interface EmployeeFormProps {
-  addEmployee(employee: Employee): void;
+  addEmployee: (employee: Employee) => void;
 }
 
 const FormSchema = Yup.object().shape({
@@ -28,8 +29,6 @@ const FormSchema = Yup.object().shape({
 });
 
 const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
-  console.log(props);
-
   return (
     <Formik
       initialValues={{
@@ -67,14 +66,18 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
         touched,
         setFieldTouched,
       }) => (
-        <Box width="100%">
+        <Box width="100%" padding="20px">
+          <Typography variant="h1">New Employee</Typography>
           <form onSubmit={handleSubmit}>
             <Box
               display="flex"
               flexDirection="column"
-              padding="50px"
               height="500px"
               justifyContent="space-evenly"
+              padding="0 30px"
+              marginTop="30px"
+              borderRadius="20px"
+              border="1px solid #003366"
             >
               <TextField
                 id="firstName"
@@ -88,7 +91,7 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
                   setFieldTouched(e.target.name, true, false);
                   handleChange(e);
                 }}
-                error={touched.firstName && Boolean(errors.firstName)}
+                error={touched.firstName && !!errors.firstName}
                 helperText={touched.firstName && errors.firstName}
               />
               <TextField
@@ -102,7 +105,7 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
                   setFieldTouched(e.target.name, true, false);
                   handleChange(e);
                 }}
-                error={touched.lastName && Boolean(errors.lastName)}
+                error={touched.lastName && !!errors.lastName}
                 helperText={touched.lastName && errors.lastName}
               />
               <TextField
@@ -116,7 +119,7 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
                   setFieldTouched(e.target.name, true, false);
                   handleChange(e);
                 }}
-                error={touched.amount && Boolean(errors.amount)}
+                error={touched.amount && !!errors.amount}
                 helperText={touched.amount && errors.amount}
               />
               <RadioGroup
@@ -155,11 +158,16 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
                   setFieldTouched(e.target.name, true, false);
                   handleChange(e);
                 }}
-                error={touched.startDate && Boolean(errors.startDate)}
+                error={touched.startDate && !!errors.startDate}
                 helperText={touched.startDate && errors.startDate}
               />
 
-              <Button variant="contained" size="medium" type="submit">
+              <Button
+                variant="contained"
+                color="primary"
+                size="medium"
+                type="submit"
+              >
                 Add employee
               </Button>
             </Box>

@@ -8,13 +8,13 @@ import {
   CardHeader,
   Collapse,
   IconButton,
+  makeStyles,
   TextField,
   Typography,
 } from "@material-ui/core";
 import { useEffect } from "react";
 import { useState } from "react";
 import { orderBy } from "lodash";
-import initialEmployeeData from "../data/mock-data.json";
 import { Employee } from "../models/employee";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -24,13 +24,24 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ClearIcon from "@material-ui/icons/Clear";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 
 interface ISort {
   field: string;
   direction: boolean | "asc" | "desc";
 }
 
+const useStyles = makeStyles(() => ({
+  dashboardButton: {
+    margin: "0 5px",
+    width: "145px",
+  },
+}));
+
 const EmployeeDashboard = (): JSX.Element => {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const { addEmployee, removeEmployee } = bindActionCreators(
     employeeActionCreators,
@@ -47,16 +58,11 @@ const EmployeeDashboard = (): JSX.Element => {
     direction: "asc",
   });
 
-  // const [expanded, setExpanded] = useState(false);
   const [expandedId, setExpandedId] = useState(-1);
 
   const handleExpandClick = (i: number) => {
     setExpandedId(expandedId === i ? -1 : i);
   };
-
-  // const handleExpandClick = () => {
-  //   setExpanded(!expanded);
-  // };
 
   const updateSort = (field: string) => {
     setSort({
@@ -133,10 +139,12 @@ const EmployeeDashboard = (): JSX.Element => {
   return (
     <Box display="flex">
       <Box display="flex" width="70%" flexDirection="column" padding="20px">
+        <Typography variant="h1">Employee Details</Typography>
         <Box
           display="flex"
           flexDirection="row"
           width="100%"
+          marginTop="30px"
           justifyContent="space-between"
         >
           <Box display="flex">
@@ -147,25 +155,74 @@ const EmployeeDashboard = (): JSX.Element => {
               value={filter}
               variant="outlined"
             />
-            <IconButton aria-label="settings" onClick={() => setFilter("")}>
-              <ClearIcon />
-            </IconButton>
+            {!!filter && (
+              <IconButton aria-label="settings" onClick={() => setFilter("")}>
+                <ClearIcon />
+              </IconButton>
+            )}
           </Box>
           <Box display="flex">
-            <Button variant="outlined" onClick={() => updateSort("firstName")}>
-              Sort by Name
+            <Button
+              className={classes.dashboardButton}
+              variant="contained"
+              color="primary"
+              onClick={() => updateSort("firstName")}
+              endIcon={
+                sort.field === "firstName" ? (
+                  sort.direction === "asc" ? (
+                    <ArrowUpwardIcon fontSize="small" />
+                  ) : (
+                    <ArrowDownwardIcon fontSize="small" />
+                  )
+                ) : null
+              }
+            >
+              Name
             </Button>
             <Button
-              variant="outlined"
+              className={classes.dashboardButton}
+              variant="contained"
+              color="primary"
               onClick={() => updateSort("annualSalary.amount")}
+              endIcon={
+                sort.field === "annualSalary.amount" ? (
+                  sort.direction === "asc" ? (
+                    <ArrowUpwardIcon fontSize="small" />
+                  ) : (
+                    <ArrowDownwardIcon fontSize="small" />
+                  )
+                ) : null
+              }
             >
-              Sort by Amount
+              Annual Salary
             </Button>
-            <Button variant="outlined" onClick={() => updateSort("startDate")}>
-              Sort by Date
+            <Button
+              className={classes.dashboardButton}
+              variant="contained"
+              color="primary"
+              onClick={() => updateSort("startDate")}
+              endIcon={
+                sort.field === "startDate" ? (
+                  sort.direction === "asc" ? (
+                    <ArrowUpwardIcon fontSize="small" />
+                  ) : (
+                    <ArrowDownwardIcon fontSize="small" />
+                  )
+                ) : null
+              }
+            >
+              Date
             </Button>
-            <Button variant="outlined" onClick={exportToCSV}>
-              Export to CSV
+          </Box>
+          <Box display="flex">
+            <Button
+              className={classes.dashboardButton}
+              variant="contained"
+              color="primary"
+              startIcon={<CloudDownloadIcon />}
+              onClick={exportToCSV}
+            >
+              CSV Export
             </Button>
           </Box>
         </Box>
@@ -179,7 +236,7 @@ const EmployeeDashboard = (): JSX.Element => {
                   )}${employee.lastName.charAt(0)}`}</Avatar>
                 }
                 title={`${employee.firstName} ${employee.lastName}`}
-                subheader={`Joined: ${employee.startDate}`}
+                subheader={`Joined: ${employee.startDate} / Salary: ${employee.annualSalary.currency} ${employee.annualSalary.amount}`}
                 action={
                   <>
                     <IconButton
