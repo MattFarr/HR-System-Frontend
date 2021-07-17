@@ -8,6 +8,7 @@ import { Employee } from "../models/employee";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { employeeActionCreators, State } from "../state";
+import EmployeeForm from "./EmployeeForm";
 
 interface ISort {
   field: string;
@@ -104,6 +105,7 @@ const EmployeeDashboard = (): JSX.Element => {
 
   return (
     <Box>
+      <EmployeeForm addEmployee={addEmployee} />
       <TextField
         type="text"
         onChange={(e) => setFilter(e.target.value)}
