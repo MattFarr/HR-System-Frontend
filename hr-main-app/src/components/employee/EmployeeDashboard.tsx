@@ -1,12 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  Avatar,
   Box,
   Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Collapse,
   IconButton,
   makeStyles,
   TextField,
@@ -14,22 +9,19 @@ import {
 } from "@material-ui/core";
 import { useEffect } from "react";
 import { useState } from "react";
-import { orderBy } from "lodash";
 import { Employee } from "../../models/employee/employee";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { employeeActionCreators, State } from "../../state";
 import EmployeeForm from "./EmployeeForm";
-import DeleteIcon from "@material-ui/icons/Delete";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ClearIcon from "@material-ui/icons/Clear";
-import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
-import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import { ISort } from "../../models/sort/ISort";
-import { sortList, updateSort } from "../../helpers/sort/sortHelper";
+import { sortList } from "../../helpers/sort/sortHelper";
 import { filterEmployeeByName } from "../../helpers/filter/filterHelper";
+import { exportEmployeesToCSV } from "../../helpers/csv/csvExportHelper";
+import SortButton from "../common/SortButton";
+import EmployeeDetails from "./EmployeeDetails";
 
 const useStyles = makeStyles(() => ({
   dashboardButton: {
@@ -57,33 +49,9 @@ const EmployeeDashboard = (): JSX.Element => {
     direction: "asc",
   });
 
-  const [expandedId, setExpandedId] = useState(-1);
-
-  const handleExpandClick = (i: number) => {
-    setExpandedId(expandedId === i ? -1 : i);
-  };
-
   const addNewEmployee = (employee: Employee) => {
     setFilter("");
     addEmployee(employee);
-  };
-
-  const exportToCSV = () => {
-    if (!employees.length) {
-      alert("Nothing to export");
-      return;
-    }
-    let csvText = `${Object.keys(employees[0]).join(",")}\r\n`;
-    employees.forEach((employee) => {
-      csvText += `${employee.annualSalary.amount},${employee.firstName},${employee.lastName},${employee.annualSalary.amount} ${employee.annualSalary.currency},${employee.startDate}\r\n`;
-    });
-
-    var a = document.createElement("a");
-    a.href = "data:attachment/csv," + encodeURIComponent(csvText);
-    a.target = "_blank";
-    a.download = "myFile.csv";
-    document.body.appendChild(a);
-    a.click();
   };
 
   useEffect(() => {
@@ -91,18 +59,6 @@ const EmployeeDashboard = (): JSX.Element => {
     list = filterEmployeeByName(list, filter) ?? employeesState.employees;
     list = sortList<Employee>(list, sort);
     setEmployees(list);
-    // let list = employeesState.employees;
-    // if (filter) {
-    //   list = list.filter((employee: Employee) =>
-    //     `${employee.firstName} ${employee.lastName}`
-    //       .toLowerCase()
-    //       .includes(filter.toLowerCase())
-    //   );
-    // }
-    // if (sort) {
-    //   list = orderBy(list, [sort.field], [sort.direction]);
-    // }
-    // setEmployees(list);
   }, [employeesState]);
 
   useEffect(() => {
@@ -141,57 +97,24 @@ const EmployeeDashboard = (): JSX.Element => {
             )}
           </Box>
           <Box display="flex">
-            <Button
-              className={classes.dashboardButton}
-              variant="contained"
-              color="primary"
-              onClick={() => setSort(updateSort("firstName", sort))}
-              endIcon={
-                sort.field === "firstName" ? (
-                  sort.direction === "asc" ? (
-                    <ArrowUpwardIcon fontSize="small" />
-                  ) : (
-                    <ArrowDownwardIcon fontSize="small" />
-                  )
-                ) : null
-              }
-            >
-              Name
-            </Button>
-            <Button
-              className={classes.dashboardButton}
-              variant="contained"
-              color="primary"
-              onClick={() => setSort(updateSort("annualSalary.amount", sort))}
-              endIcon={
-                sort.field === "annualSalary.amount" ? (
-                  sort.direction === "asc" ? (
-                    <ArrowUpwardIcon fontSize="small" />
-                  ) : (
-                    <ArrowDownwardIcon fontSize="small" />
-                  )
-                ) : null
-              }
-            >
-              Annual Salary
-            </Button>
-            <Button
-              className={classes.dashboardButton}
-              variant="contained"
-              color="primary"
-              onClick={() => setSort(updateSort("startDate", sort))}
-              endIcon={
-                sort.field === "startDate" ? (
-                  sort.direction === "asc" ? (
-                    <ArrowUpwardIcon fontSize="small" />
-                  ) : (
-                    <ArrowDownwardIcon fontSize="small" />
-                  )
-                ) : null
-              }
-            >
-              Date
-            </Button>
+            <SortButton
+              label={"Name"}
+              field="firstName"
+              sortObject={sort}
+              setSort={setSort}
+            />
+            <SortButton
+              label={"Annual Salary"}
+              field="annualSalary.amount"
+              sortObject={sort}
+              setSort={setSort}
+            />
+            <SortButton
+              label={"Start Date"}
+              field="startDate"
+              sortObject={sort}
+              setSort={setSort}
+            />
           </Box>
           <Box display="flex">
             <Button
@@ -199,81 +122,16 @@ const EmployeeDashboard = (): JSX.Element => {
               variant="contained"
               color="primary"
               startIcon={<CloudDownloadIcon />}
-              onClick={exportToCSV}
+              onClick={() => exportEmployeesToCSV(employees)}
             >
-              CSV Export
+              <Typography variant="body2">CSV Export</Typography>
             </Button>
           </Box>
         </Box>
-        <Box display="flex" flexDirection="column" marginTop="20px">
-          {employees.map((employee: Employee) => (
-            <Card key={employee.id}>
-              <CardHeader
-                avatar={
-                  <Avatar>{`${employee.firstName.charAt(
-                    0
-                  )}${employee.lastName.charAt(0)}`}</Avatar>
-                }
-                title={`${employee.firstName} ${employee.lastName}`}
-                subheader={`Joined: ${employee.startDate} / Salary: ${employee.annualSalary.currency} ${employee.annualSalary.amount}`}
-                action={
-                  <>
-                    <IconButton
-                      onClick={() => handleExpandClick(employee.id)}
-                      aria-expanded={expandedId === employee.id}
-                      aria-label="show more"
-                    >
-                      {expandedId === employee.id ? (
-                        <ExpandLessIcon />
-                      ) : (
-                        <ExpandMoreIcon />
-                      )}
-                    </IconButton>
-                    <IconButton
-                      aria-label="settings"
-                      onClick={() => removeEmployee(employee.id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </>
-                }
-              />
-              <Collapse
-                in={expandedId === employee.id}
-                timeout="auto"
-                unmountOnExit
-              >
-                <CardContent>
-                  <Box
-                    display="flex"
-                    flexDirection="row"
-                    width="100%"
-                    flexWrap="wrap"
-                    justifyContent="space-evenly"
-                  >
-                    <Box width="30%">
-                      <h2>Info</h2>
-                      <Typography>{`Employee Id: ${employee.id}`}</Typography>
-                      <Typography>{`Employee: ${employee.firstName} ${employee.lastName}`}</Typography>
-                      <Typography>{`Joined on: ${employee.startDate}`}</Typography>
-                    </Box>
-                    <Box width="30%">
-                      <h2>Role</h2>
-                      <Typography>{`Job Title: Senior Programmer`}</Typography>
-                      <Typography>{`Grade: C2`}</Typography>
-                      <Typography>{`Reports to: Matthew Farrugia`}</Typography>
-                    </Box>
-                    <Box width="30%">
-                      <h2>Salary</h2>
-                      <Typography>{`Annual Salary: ${employee.annualSalary.amount}`}</Typography>
-                      <Typography>{`Currency: ${employee.annualSalary.currency}`}</Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Collapse>
-            </Card>
-          ))}
-        </Box>
+        <EmployeeDetails
+          employees={employees}
+          removeEmployee={removeEmployee}
+        />
       </Box>
       <Box
         display="flex"

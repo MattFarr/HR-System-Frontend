@@ -41,7 +41,8 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
       }}
       validationSchema={FormSchema}
       onSubmit={async (values: any) => {
-        //This is only for test purposes , the best way to do this is to check if the id exisits already and throw an error if so
+        /*This is only for sole purpose of this test, usually backend handles this
+        And also you need to do a check if the id exisits already and throw an error if so both client and server side*/
         const userId = Math.floor(Math.random() * 100000) + 1;
 
         let employeeModel: Employee = {
