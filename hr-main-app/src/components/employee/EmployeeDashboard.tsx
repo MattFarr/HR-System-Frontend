@@ -72,7 +72,7 @@ const EmployeeDashboard = (): JSX.Element => {
           marginTop="30px"
           justifyContent="space-between"
         >
-          <Box display="flex">
+          <Box display="flex" minWidth="280px">
             <TextField
               label="Search by name"
               type="text"
