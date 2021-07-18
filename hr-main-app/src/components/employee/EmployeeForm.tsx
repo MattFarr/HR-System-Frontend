@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   FormControlLabel,
+  makeStyles,
   Radio,
   RadioGroup,
   TextField,
@@ -10,6 +11,7 @@ import {
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Employee } from "../../models/employee/employee";
+import AddIcon from "@material-ui/icons/Add";
 
 interface EmployeeFormProps {
   addEmployee: (employee: Employee) => void;
@@ -22,19 +24,36 @@ const FormSchema = Yup.object().shape({
   lastName: Yup.string()
     .matches(/^[a-zA-Z]+$/, "Numbers and Special Characters are not supported")
     .required("Required"),
-  amount: Yup.number()
-    .positive("Must be greater than zero")
+  title: Yup.string()
+    .matches(/^[a-zA-Z]+$/, "Numbers and Special Characters are not supported")
+    .required("Required"),
+  manager: Yup.string()
+    .matches(/^[a-zA-Z]+$/, "Numbers and Special Characters are not supported")
+    .required("Required"),
+  grade: Yup.string().required("Required"),
+  amount: Yup.string()
+    .matches(/^[0-9]*$/, "Only numbers are allwoed")
     .required("Required"),
   startDate: Yup.date().required("Required"),
 });
 
+const useStyles = makeStyles(() => ({
+  newEmployeeHeading: {
+    paddingLeft: "30px",
+  },
+}));
+
 const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
+  const classes = useStyles();
   return (
     <Formik
       initialValues={{
         firstName: "",
         lastName: "",
         id: "",
+        title: "",
+        grade: "",
+        manager: "",
         startDate: "",
         currency: "EUR",
         amount: "",
@@ -49,6 +68,9 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
           id: userId,
           firstName: values.firstName,
           lastName: values.lastName,
+          title: values.title,
+          grade: values.grade,
+          manager: values.manager,
           startDate: values.startDate,
           annualSalary: {
             amount: values.amount,
@@ -68,17 +90,18 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
         setFieldTouched,
       }) => (
         <Box width="100%" padding="20px">
-          <Typography variant="h1">New Employee</Typography>
+          <Typography variant="h1" className={classes.newEmployeeHeading}>
+            New Employee
+          </Typography>
           <form onSubmit={handleSubmit}>
             <Box
               display="flex"
               flexDirection="column"
-              height="500px"
+              height="680px"
               justifyContent="space-evenly"
               padding="0 30px"
-              marginTop="30px"
-              borderRadius="20px"
-              border="1px solid #003366"
+              marginTop="10px"
+              borderLeft="3px solid grey"
             >
               <TextField
                 id="firstName"
@@ -108,6 +131,48 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
                 }}
                 error={touched.lastName && !!errors.lastName}
                 helperText={touched.lastName && errors.lastName}
+              />
+              <TextField
+                id="title"
+                label="Job Title"
+                variant="outlined"
+                name="title"
+                type="text"
+                value={values.title}
+                onChange={(e) => {
+                  setFieldTouched(e.target.name, true, false);
+                  handleChange(e);
+                }}
+                error={touched.title && !!errors.title}
+                helperText={touched.title && errors.title}
+              />
+              <TextField
+                id="grade"
+                label="Job Grade"
+                variant="outlined"
+                name="grade"
+                type="text"
+                value={values.grade}
+                onChange={(e) => {
+                  setFieldTouched(e.target.name, true, false);
+                  handleChange(e);
+                }}
+                error={touched.grade && !!errors.grade}
+                helperText={touched.grade && errors.grade}
+              />
+              <TextField
+                id="manager"
+                label="Reports To"
+                variant="outlined"
+                name="manager"
+                type="text"
+                value={values.manager}
+                onChange={(e) => {
+                  setFieldTouched(e.target.name, true, false);
+                  handleChange(e);
+                }}
+                error={touched.manager && !!errors.manager}
+                helperText={touched.manager && errors.manager}
               />
               <TextField
                 id="amount"
@@ -168,8 +233,9 @@ const EmployeeForm = (props: EmployeeFormProps): JSX.Element => {
                 color="primary"
                 size="medium"
                 type="submit"
+                endIcon={<AddIcon />}
               >
-                Add employee
+                <Typography variant="body1">New Employee</Typography>
               </Button>
             </Box>
           </form>

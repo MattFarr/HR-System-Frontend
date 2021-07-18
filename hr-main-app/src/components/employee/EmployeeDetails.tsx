@@ -96,9 +96,9 @@ const EmployeeDetails = (props: EmployeeDetailsProps): JSX.Element => {
                   <Typography variant="h2" className={classes.detailHeading}>
                     Role
                   </Typography>
-                  <Typography>{`Job Title: Senior Programmer`}</Typography>
-                  <Typography>{`Grade: C2`}</Typography>
-                  <Typography>{`Reports to: Matthew Farrugia`}</Typography>
+                  <Typography>{`Job Title: ${employee.title}`}</Typography>
+                  <Typography>{`Grade: ${employee.grade}`}</Typography>
+                  <Typography>{`Reports to: ${employee.manager}`}</Typography>
                 </Box>
                 <Box width="30%">
                   <Typography variant="h2" className={classes.detailHeading}>

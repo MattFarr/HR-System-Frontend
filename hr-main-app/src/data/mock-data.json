@@ -3,6 +3,9 @@
     "id": 1,
     "firstName": "John",
     "lastName": "Doe",
+    "title": "Programmer",
+    "grade": "D2",
+    "manager": "Markus Aurelius",
     "annualSalary": {
       "amount": 25000,
       "currency": "EUR"
@@ -13,6 +16,9 @@
     "id": 2,
     "firstName": "Lila",
     "lastName": "Kaufman",
+    "title": "Senior Programmer",
+    "grade": "C2",
+    "manager": "Markus Aurelius",
     "annualSalary": {
       "amount": 50000,
       "currency": "USD"
@@ -23,6 +29,9 @@
     "id": 3,
     "firstName": "Jay",
     "lastName": "Bryan",
+    "title": "Technical Architect",
+    "grade": "C1",
+    "manager": "Markus Aurelius",
     "annualSalary": {
       "amount": 50000,
       "currency": "EUR"
