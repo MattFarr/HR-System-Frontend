@@ -2,8 +2,15 @@ import { EmployeeActionType } from "../action-types/employeeActionTypes";
 import { EmployeeAction } from "../actions/employeeActions";
 import initialEmployeeData from "../../data/mock-data.json";
 import { EmployeeState } from "../state-models/employeeState";
+import { loadState } from "../../helpers/localStorage/localStorageHelper";
 
-const initialState: EmployeeState = { employees: initialEmployeeData };
+const getEmployeeList = () => {
+  console.log("DAHAL");
+  let state = loadState("employeeStorage");
+  return state === undefined ? initialEmployeeData : state["employees"];
+};
+
+const initialState: EmployeeState = { employees: getEmployeeList() };
 
 const accountReducer = (
   state: EmployeeState = initialState,
