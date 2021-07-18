@@ -43,7 +43,7 @@ const EmployeeDashboard = (): JSX.Element => {
   const [employees, setEmployees] = useState<Employee[]>(
     employeesState.employees
   );
-  const [filter, setFilter] = useState<string | undefined>(undefined);
+  const [filter, setFilter] = useState<string>("");
   const [sort, setSort] = useState<ISort>({
     field: "",
     direction: "asc",
@@ -63,7 +63,8 @@ const EmployeeDashboard = (): JSX.Element => {
 
   useEffect(() => {
     setEmployees(
-      filterEmployeeByName(employees, filter) ?? employeesState.employees
+      filterEmployeeByName(employeesState.employees, filter) ??
+        employeesState.employees
     );
   }, [filter]);
 

@@ -2,7 +2,7 @@ import { Employee } from "../../models/employee/employee";
 
 export const filterEmployeeByName = (
   list: Employee[],
-  filter: string | undefined
+  filter: string
 ): Employee[] | null => {
   return filter
     ? list.filter((employee: Employee) =>
