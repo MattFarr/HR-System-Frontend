@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "./state/index";
-import EmployeeDashboard from "./components/EmployeeDashboard";
+import EmployeeDashboard from "./components/employee/EmployeeDashboard";
 import { ThemeProvider } from "@material-ui/core";
 import { theme } from "../../hr-main-app/src/theme";
 

@@ -15,10 +15,10 @@ import {
 import { useEffect } from "react";
 import { useState } from "react";
 import { orderBy } from "lodash";
-import { Employee } from "../models/employee";
+import { Employee } from "../../models/employee/employee";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-import { employeeActionCreators, State } from "../state";
+import { employeeActionCreators, State } from "../../state";
 import EmployeeForm from "./EmployeeForm";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -27,11 +27,9 @@ import ClearIcon from "@material-ui/icons/Clear";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
-
-interface ISort {
-  field: string;
-  direction: boolean | "asc" | "desc";
-}
+import { ISort } from "../../models/sort/ISort";
+import { sortList, updateSort } from "../../helpers/sort/sortHelper";
+import { filterEmployeeByName } from "../../helpers/filter/filterHelper";
 
 const useStyles = makeStyles(() => ({
   dashboardButton: {
@@ -42,6 +40,7 @@ const useStyles = makeStyles(() => ({
 
 const EmployeeDashboard = (): JSX.Element => {
   const classes = useStyles();
+
   const dispatch = useDispatch();
   const { addEmployee, removeEmployee } = bindActionCreators(
     employeeActionCreators,
@@ -62,18 +61,6 @@ const EmployeeDashboard = (): JSX.Element => {
 
   const handleExpandClick = (i: number) => {
     setExpandedId(expandedId === i ? -1 : i);
-  };
-
-  const updateSort = (field: string) => {
-    setSort({
-      field,
-      direction:
-        field !== sort.field
-          ? "asc"
-          : sort.direction === "asc"
-          ? "desc"
-          : "asc",
-    });
   };
 
   const addNewEmployee = (employee: Employee) => {
@@ -101,39 +88,31 @@ const EmployeeDashboard = (): JSX.Element => {
 
   useEffect(() => {
     let list = employeesState.employees;
-    if (filter) {
-      list = list.filter((employee: Employee) =>
-        `${employee.firstName} ${employee.lastName}`
-          .toLowerCase()
-          .includes(filter.toLowerCase())
-      );
-    }
-    if (sort) {
-      list = orderBy(list, [sort.field], [sort.direction]);
-    }
+    list = filterEmployeeByName(list, filter) ?? employeesState.employees;
+    list = sortList<Employee>(list, sort);
     setEmployees(list);
+    // let list = employeesState.employees;
+    // if (filter) {
+    //   list = list.filter((employee: Employee) =>
+    //     `${employee.firstName} ${employee.lastName}`
+    //       .toLowerCase()
+    //       .includes(filter.toLowerCase())
+    //   );
+    // }
+    // if (sort) {
+    //   list = orderBy(list, [sort.field], [sort.direction]);
+    // }
+    // setEmployees(list);
   }, [employeesState]);
 
   useEffect(() => {
-    let list = employees;
-    if (filter) {
-      list = list.filter((employee: Employee) =>
-        `${employee.firstName} ${employee.lastName}`
-          .toLowerCase()
-          .includes(filter.toLowerCase())
-      );
-    } else {
-      list = employeesState.employees;
-    }
-    setEmployees(list);
+    setEmployees(
+      filterEmployeeByName(employees, filter) ?? employeesState.employees
+    );
   }, [filter]);
 
   useEffect(() => {
-    let list = employees;
-    if (sort) {
-      list = orderBy(list, [sort.field], [sort.direction]);
-    }
-    setEmployees(list);
+    setEmployees(sortList<Employee>(employees, sort));
   }, [sort]);
 
   return (
@@ -166,7 +145,7 @@ const EmployeeDashboard = (): JSX.Element => {
               className={classes.dashboardButton}
               variant="contained"
               color="primary"
-              onClick={() => updateSort("firstName")}
+              onClick={() => setSort(updateSort("firstName", sort))}
               endIcon={
                 sort.field === "firstName" ? (
                   sort.direction === "asc" ? (
@@ -183,7 +162,7 @@ const EmployeeDashboard = (): JSX.Element => {
               className={classes.dashboardButton}
               variant="contained"
               color="primary"
-              onClick={() => updateSort("annualSalary.amount")}
+              onClick={() => setSort(updateSort("annualSalary.amount", sort))}
               endIcon={
                 sort.field === "annualSalary.amount" ? (
                   sort.direction === "asc" ? (
@@ -200,7 +179,7 @@ const EmployeeDashboard = (): JSX.Element => {
               className={classes.dashboardButton}
               variant="contained"
               color="primary"
-              onClick={() => updateSort("startDate")}
+              onClick={() => setSort(updateSort("startDate", sort))}
               endIcon={
                 sort.field === "startDate" ? (
                   sort.direction === "asc" ? (

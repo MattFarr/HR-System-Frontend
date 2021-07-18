@@ -1,4 +1,4 @@
-import { Employee } from "../../models/employee";
+import { Employee } from "../../models/employee/employee";
 import { EmployeeActionType } from "../action-types/employeeActionTypes";
 
 interface AddEmployeeAction {

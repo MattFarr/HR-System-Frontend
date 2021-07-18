@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { Employee } from "../models/employee";
+import { Employee } from "../../models/employee/employee";
 
 interface EmployeeFormProps {
   addEmployee: (employee: Employee) => void;

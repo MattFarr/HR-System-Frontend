@@ -1,7 +1,7 @@
 import { EmployeeActionType } from "../action-types/employeeActionTypes";
 import { Dispatch } from "redux";
 import { EmployeeAction } from "../actions/employeeActions";
-import { Employee } from "../../models/employee";
+import { Employee } from "../../models/employee/employee";
 
 export const addEmployee = (employee: Employee) => {
   return (dispatch: Dispatch<EmployeeAction>) => {
