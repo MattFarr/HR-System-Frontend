@@ -59,18 +59,7 @@ const EmployeeDashboard = (): JSX.Element => {
     list = filterEmployeeByName(list, filter) ?? employeesState.employees;
     list = sortList<Employee>(list, sort);
     setEmployees(list);
-  }, [employeesState]);
-
-  useEffect(() => {
-    setEmployees(
-      filterEmployeeByName(employeesState.employees, filter) ??
-        employeesState.employees
-    );
-  }, [filter]);
-
-  useEffect(() => {
-    setEmployees(sortList<Employee>(employees, sort));
-  }, [sort]);
+  }, [filter, sort, employeesState]);
 
   return (
     <Box display="flex">

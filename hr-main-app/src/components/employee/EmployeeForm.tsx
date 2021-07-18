@@ -28,12 +28,20 @@ const FormSchema = Yup.object().shape({
     .matches(/^[a-zA-Z]+$/, "Numbers and Special Characters are not supported")
     .required("Required"),
   manager: Yup.string()
-    .matches(/^[a-zA-Z]+$/, "Numbers and Special Characters are not supported")
+    .matches(
+      /^[a-zA-Z\s]*$/,
+      "Numbers and Special Characters are not supported"
+    )
     .required("Required"),
   grade: Yup.string().required("Required"),
   amount: Yup.string()
     .matches(/^[0-9]*$/, "Only numbers are allwoed")
-    .required("Required"),
+    .required("Required")
+    .test(
+      "len",
+      "Salary must be exactly 5 digits",
+      (amount) => amount?.length === 5
+    ),
   startDate: Yup.date().required("Required"),
 });
 

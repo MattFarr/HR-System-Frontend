@@ -1,46 +1,41 @@
-# Getting Started with Create React App
+# HR-System-Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+HR-System-Frontend
 
-## Available Scripts
+## Tech Stack
 
-In the project directory, you can run:
+- React
+- Redux
+- Typescript
+- Formik
+- Yup
+- Material-UI
+- Loadash
 
-### `yarn start`
+## Assumptions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Third party plugins such as MUI Datagrids and React Datagrids were not taken into consideration for this test.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- The file was modified slightly and three new fields were added: title, grade and manager.
 
-### `yarn test`
+- The Employee id is randomly generated, with no validation, when you add an employee. This is only for this program's purposes. Usually the id is given by the server and validated for uniquness on entry and on saving.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Sort, Search functions are altering data for presentation purposes, the result is not kept in Redux State. This would be the case if the app is server/backend managed and the sort and search state will be retrieved via API's.
 
-### `yarn build`
+- For the purpose of this test, currency was not taken into consideration when sorting by salary; only the amount was used.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- When adding a new employee sort is persisted but filter is cleared.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- The New employee form provides basic validation, no complex validation was introduced.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- All functionality is presented in one dashboard: Adding / Deleting / Data Viewing / Searching / Sorting / Export. As such no routing or different pages were introduced.
 
-### `yarn eject`
+## Improvements :
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- The UI is a basic implementation to showcase a simple dashboard, can be enhanced further.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- On search a debounce can be used, but since this is only a test project and there are no API calls there was no need for a debounce implementation.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- Re-usable form (Formik) components. In real life code, would be ideal to create reusable field components that can be re-used across multiple forms without the need. For the purpose of this test, the form is in one component.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Sorting by salary can take into consideration currency conversion to order by the actual value across different currencies or introduce a data filter which will show only users of a specific currency.

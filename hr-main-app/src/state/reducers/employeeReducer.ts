@@ -5,7 +5,6 @@ import { EmployeeState } from "../state-models/employeeState";
 import { loadState } from "../../helpers/localStorage/localStorageHelper";
 
 const getEmployeeList = () => {
-  console.log("DAHAL");
   let state = loadState("employeeStorage");
   return state === undefined ? initialEmployeeData : state["employees"];
 };
